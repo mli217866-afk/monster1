@@ -21,6 +21,11 @@ import type {
 } from '../types';
 import { PlanIntervals, PaymentScenes, PaymentTypes } from '../types';
 
+type NewPaymentRecord = Omit<
+  typeof payment.$inferInsert,
+  'id' | 'createdAt' | 'updatedAt'
+>;
+
 /**
  * Stripe payment provider implementation
  */
@@ -954,19 +959,21 @@ export class StripeProvider implements PaymentProvider {
    * @param recordType Type for logging ("subscription" or "one-time")
    */
   private async insertPaymentRecord(
-    paymentData: Record<string, any>,
+    paymentData: NewPaymentRecord,
     recordType: string
   ): Promise<void> {
     const currentDate = new Date();
     const db = getDb();
 
     try {
-      await db.insert(payment).values({
+      const values: typeof payment.$inferInsert = {
         id: crypto.randomUUID(),
         createdAt: currentDate,
         updatedAt: currentDate,
         ...paymentData,
-      });
+      };
+
+      await db.insert(payment).values(values);
 
       console.log(`<< Created ${recordType} payment record success`);
     } catch (error) {

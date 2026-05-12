@@ -3,6 +3,6 @@ import { Routes } from '@/lib/routes';
 
 export const Route = createFileRoute('/admin/')({
   beforeLoad: () => {
-    throw redirect({ to: Routes.AdminUsers });
+    throw redirect({ to: Routes.AdminPrompts });
   },
 });

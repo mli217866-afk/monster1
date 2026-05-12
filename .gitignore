@@ -16,6 +16,8 @@ count.txt
 .content-collections
 __unconfig*
 todos.json
+.tmp/
+dev-server*.log
 
 # claude code
 .claude

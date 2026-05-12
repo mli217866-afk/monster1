@@ -40,6 +40,10 @@ export const Routes = {
   // Dashboard routes
   Dashboard: '/dashboard',
 
+  // User routes
+  Me: '/me',
+  MyCollections: '/me/collections',
+
   // Settings routes
   Settings: '/settings',
   SettingsProfile: '/settings/profile',
@@ -53,6 +57,9 @@ export const Routes = {
   // Admin routes
   Admin: '/admin',
   AdminUsers: '/admin/users',
+  AdminPrompts: '/admin/prompts',
+  AdminModels: '/admin/models',
+  AdminTags: '/admin/tags',
 } as const;
 
 /** Default login redirect route */

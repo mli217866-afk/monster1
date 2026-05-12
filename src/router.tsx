@@ -17,6 +17,7 @@ export const getRouter = () => {
     context: { ...queryContext },
     defaultPreload: 'intent',
     scrollRestoration: true,
+    scrollRestorationBehavior: 'instant',
     // Wrap: provides NuqsAdapter and TanstackQuery.Provider for SSR
     // These providers wrap the entire route tree content (not RootDocument)
     // RootDocument (shellComponent)

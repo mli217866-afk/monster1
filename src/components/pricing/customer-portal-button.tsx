@@ -1,6 +1,5 @@
 import { createCustomerPortalSession } from '@/api/payment';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { messages } from '@/messages';
 import { IconLoader2 } from '@tabler/icons-react';
 import { useState } from 'react';

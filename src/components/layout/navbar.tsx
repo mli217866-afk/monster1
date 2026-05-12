@@ -21,8 +21,8 @@ import { ModeSwitcher } from '@/components/theme/mode-switcher';
 import { NavbarMobile } from '@/components/layout/navbar-mobile';
 import { UserButton } from '@/components/shared/user-button';
 import { LoginWrapper } from '@/components/auth/login-wrapper';
-import { IconArrowUpRight } from '@tabler/icons-react';
-import { Link, useLocation } from '@tanstack/react-router';
+import { IconArrowUpRight, IconSearch } from '@tabler/icons-react';
+import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { websiteConfig } from '@/config/website';
 import { messages } from '@/messages';
@@ -33,10 +33,12 @@ interface NavbarProps {
 
 export function Navbar({ scroll = true }: NavbarProps) {
   const pathname = useLocation().pathname;
+  const navigate = useNavigate();
   const scrolled = useScroll(50);
   const menuLinks = getNavbarLinks();
   const [mounted, setMounted] = useState(false);
   const [menuValue, setMenuValue] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
   const showBarBg = scroll && scrolled;
@@ -76,6 +78,24 @@ export function Navbar({ scroll = true }: NavbarProps) {
                 {websiteConfig.metadata?.name}
               </span>
             </Link>
+
+            <form
+              className="relative w-full max-w-sm"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const q = search.trim();
+                if (!q) return;
+                navigate({ to: '/search', search: { q } });
+              }}
+            >
+              <IconSearch className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-2.5 size-4 text-muted-foreground" />
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="搜索提示词、模型、标签"
+                className="h-8 w-full rounded-lg border bg-background pr-3 pl-8 text-sm outline-none transition focus:border-foreground/40"
+              />
+            </form>
 
             <NavigationMenu
               value={menuValue}

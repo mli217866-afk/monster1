@@ -11,16 +11,20 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as MeRouteImport } from './routes/me'
 import { Route as ManifestDotjsonRouteImport } from './routes/manifest[.]json'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as MeIndexRouteImport } from './routes/me/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as TagSlugRouteImport } from './routes/tag/$slug'
 import { Route as SettingsSecurityRouteImport } from './routes/settings/security'
 import { Route as SettingsProfileRouteImport } from './routes/settings/profile'
 import { Route as SettingsPaymentRouteImport } from './routes/settings/payment'
@@ -28,6 +32,8 @@ import { Route as SettingsNotificationsRouteImport } from './routes/settings/not
 import { Route as SettingsFilesRouteImport } from './routes/settings/files'
 import { Route as SettingsBillingRouteImport } from './routes/settings/billing'
 import { Route as SettingsApikeysRouteImport } from './routes/settings/apikeys'
+import { Route as PromptSlugRouteImport } from './routes/prompt/$slug'
+import { Route as MeCollectionsRouteImport } from './routes/me/collections'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
@@ -35,6 +41,9 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthErrorRouteImport } from './routes/auth/error'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminTagsRouteImport } from './routes/admin/tags'
+import { Route as AdminPromptsRouteImport } from './routes/admin/prompts'
+import { Route as AdminModelsRouteImport } from './routes/admin/models'
 import { Route as testsTestErrorRouteImport } from './routes/(tests)/test-error'
 import { Route as testsTest404RouteImport } from './routes/(tests)/test-404'
 import { Route as pagesWaitlistRouteImport } from './routes/(pages)/waitlist'
@@ -47,10 +56,13 @@ import { Route as pagesAboutRouteImport } from './routes/(pages)/about'
 import { Route as legalsTermsRouteImport } from './routes/(legals)/terms'
 import { Route as legalsPrivacyRouteImport } from './routes/(legals)/privacy'
 import { Route as legalsCookieRouteImport } from './routes/(legals)/cookie'
+import { Route as MeCollectionsIdRouteImport } from './routes/me/collections/$id'
 import { Route as ApiWebhooksStripeRouteImport } from './routes/api/webhooks/stripe'
 import { Route as ApiWebhooksCreemRouteImport } from './routes/api/webhooks/creem'
 import { Route as ApiStorageFileRouteImport } from './routes/api/storage/file'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AdminPromptsNewRouteImport } from './routes/admin/prompts/new'
+import { Route as AdminPromptsIdEditRouteImport } from './routes/admin/prompts/$id/edit'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -62,9 +74,19 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ManifestDotjsonRoute = ManifestDotjsonRouteImport.update({
@@ -97,6 +119,11 @@ const SettingsIndexRoute = SettingsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => SettingsRoute,
 } as any)
+const MeIndexRoute = MeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MeRoute,
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -111,6 +138,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const TagSlugRoute = TagSlugRouteImport.update({
+  id: '/tag/$slug',
+  path: '/tag/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsSecurityRoute = SettingsSecurityRouteImport.update({
   id: '/security',
@@ -147,6 +179,16 @@ const SettingsApikeysRoute = SettingsApikeysRouteImport.update({
   path: '/apikeys',
   getParentRoute: () => SettingsRoute,
 } as any)
+const PromptSlugRoute = PromptSlugRouteImport.update({
+  id: '/prompt/$slug',
+  path: '/prompt/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeCollectionsRoute = MeCollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
+  getParentRoute: () => MeRoute,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
@@ -180,6 +222,21 @@ const AuthErrorRoute = AuthErrorRouteImport.update({
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTagsRoute = AdminTagsRouteImport.update({
+  id: '/tags',
+  path: '/tags',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPromptsRoute = AdminPromptsRouteImport.update({
+  id: '/prompts',
+  path: '/prompts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminModelsRoute = AdminModelsRouteImport.update({
+  id: '/models',
+  path: '/models',
   getParentRoute: () => AdminRoute,
 } as any)
 const testsTestErrorRoute = testsTestErrorRouteImport.update({
@@ -242,6 +299,11 @@ const legalsCookieRoute = legalsCookieRouteImport.update({
   path: '/cookie',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeCollectionsIdRoute = MeCollectionsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => MeCollectionsRoute,
+} as any)
 const ApiWebhooksStripeRoute = ApiWebhooksStripeRouteImport.update({
   id: '/api/webhooks/stripe',
   path: '/api/webhooks/stripe',
@@ -262,6 +324,16 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPromptsNewRoute = AdminPromptsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminPromptsRoute,
+} as any)
+const AdminPromptsIdEditRoute = AdminPromptsIdEditRouteImport.update({
+  id: '/$id/edit',
+  path: '/$id/edit',
+  getParentRoute: () => AdminPromptsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -269,7 +341,9 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/manifest.json': typeof ManifestDotjsonRoute
+  '/me': typeof MeRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/cookie': typeof legalsCookieRoute
@@ -284,6 +358,9 @@ export interface FileRoutesByFullPath {
   '/waitlist': typeof pagesWaitlistRoute
   '/test-404': typeof testsTest404Route
   '/test-error': typeof testsTestErrorRoute
+  '/admin/models': typeof AdminModelsRoute
+  '/admin/prompts': typeof AdminPromptsRouteWithChildren
+  '/admin/tags': typeof AdminTagsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auth/error': typeof AuthErrorRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -291,6 +368,8 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/me/collections': typeof MeCollectionsRouteWithChildren
+  '/prompt/$slug': typeof PromptSlugRoute
   '/settings/apikeys': typeof SettingsApikeysRoute
   '/settings/billing': typeof SettingsBillingRoute
   '/settings/files': typeof SettingsFilesRoute
@@ -298,20 +377,26 @@ export interface FileRoutesByFullPath {
   '/settings/payment': typeof SettingsPaymentRoute
   '/settings/profile': typeof SettingsProfileRoute
   '/settings/security': typeof SettingsSecurityRoute
+  '/tag/$slug': typeof TagSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/me/': typeof MeIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/admin/prompts/new': typeof AdminPromptsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/storage/file': typeof ApiStorageFileRoute
   '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
   '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
+  '/me/collections/$id': typeof MeCollectionsIdRoute
+  '/admin/prompts/$id/edit': typeof AdminPromptsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/manifest.json': typeof ManifestDotjsonRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/cookie': typeof legalsCookieRoute
   '/privacy': typeof legalsPrivacyRoute
@@ -325,6 +410,9 @@ export interface FileRoutesByTo {
   '/waitlist': typeof pagesWaitlistRoute
   '/test-404': typeof testsTest404Route
   '/test-error': typeof testsTestErrorRoute
+  '/admin/models': typeof AdminModelsRoute
+  '/admin/prompts': typeof AdminPromptsRouteWithChildren
+  '/admin/tags': typeof AdminTagsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auth/error': typeof AuthErrorRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -332,6 +420,8 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/me/collections': typeof MeCollectionsRouteWithChildren
+  '/prompt/$slug': typeof PromptSlugRoute
   '/settings/apikeys': typeof SettingsApikeysRoute
   '/settings/billing': typeof SettingsBillingRoute
   '/settings/files': typeof SettingsFilesRoute
@@ -339,14 +429,19 @@ export interface FileRoutesByTo {
   '/settings/payment': typeof SettingsPaymentRoute
   '/settings/profile': typeof SettingsProfileRoute
   '/settings/security': typeof SettingsSecurityRoute
+  '/tag/$slug': typeof TagSlugRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/me': typeof MeIndexRoute
   '/settings': typeof SettingsIndexRoute
+  '/admin/prompts/new': typeof AdminPromptsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/storage/file': typeof ApiStorageFileRoute
   '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
   '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
+  '/me/collections/$id': typeof MeCollectionsIdRoute
+  '/admin/prompts/$id/edit': typeof AdminPromptsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -355,7 +450,9 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/manifest.json': typeof ManifestDotjsonRoute
+  '/me': typeof MeRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/(legals)/cookie': typeof legalsCookieRoute
@@ -370,6 +467,9 @@ export interface FileRoutesById {
   '/(pages)/waitlist': typeof pagesWaitlistRoute
   '/(tests)/test-404': typeof testsTest404Route
   '/(tests)/test-error': typeof testsTestErrorRoute
+  '/admin/models': typeof AdminModelsRoute
+  '/admin/prompts': typeof AdminPromptsRouteWithChildren
+  '/admin/tags': typeof AdminTagsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auth/error': typeof AuthErrorRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -377,6 +477,8 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/me/collections': typeof MeCollectionsRouteWithChildren
+  '/prompt/$slug': typeof PromptSlugRoute
   '/settings/apikeys': typeof SettingsApikeysRoute
   '/settings/billing': typeof SettingsBillingRoute
   '/settings/files': typeof SettingsFilesRoute
@@ -384,14 +486,19 @@ export interface FileRoutesById {
   '/settings/payment': typeof SettingsPaymentRoute
   '/settings/profile': typeof SettingsProfileRoute
   '/settings/security': typeof SettingsSecurityRoute
+  '/tag/$slug': typeof TagSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/me/': typeof MeIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/admin/prompts/new': typeof AdminPromptsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/storage/file': typeof ApiStorageFileRoute
   '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
   '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
+  '/me/collections/$id': typeof MeCollectionsIdRoute
+  '/admin/prompts/$id/edit': typeof AdminPromptsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -401,7 +508,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/manifest.json'
+    | '/me'
     | '/robots.txt'
+    | '/search'
     | '/settings'
     | '/sitemap.xml'
     | '/cookie'
@@ -416,6 +525,9 @@ export interface FileRouteTypes {
     | '/waitlist'
     | '/test-404'
     | '/test-error'
+    | '/admin/models'
+    | '/admin/prompts'
+    | '/admin/tags'
     | '/admin/users'
     | '/auth/error'
     | '/auth/forgot-password'
@@ -423,6 +535,8 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/blog/$slug'
+    | '/me/collections'
+    | '/prompt/$slug'
     | '/settings/apikeys'
     | '/settings/billing'
     | '/settings/files'
@@ -430,20 +544,26 @@ export interface FileRouteTypes {
     | '/settings/payment'
     | '/settings/profile'
     | '/settings/security'
+    | '/tag/$slug'
     | '/admin/'
     | '/blog/'
     | '/dashboard/'
+    | '/me/'
     | '/settings/'
+    | '/admin/prompts/new'
     | '/api/auth/$'
     | '/api/storage/file'
     | '/api/webhooks/creem'
     | '/api/webhooks/stripe'
+    | '/me/collections/$id'
+    | '/admin/prompts/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/manifest.json'
     | '/robots.txt'
+    | '/search'
     | '/sitemap.xml'
     | '/cookie'
     | '/privacy'
@@ -457,6 +577,9 @@ export interface FileRouteTypes {
     | '/waitlist'
     | '/test-404'
     | '/test-error'
+    | '/admin/models'
+    | '/admin/prompts'
+    | '/admin/tags'
     | '/admin/users'
     | '/auth/error'
     | '/auth/forgot-password'
@@ -464,6 +587,8 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/blog/$slug'
+    | '/me/collections'
+    | '/prompt/$slug'
     | '/settings/apikeys'
     | '/settings/billing'
     | '/settings/files'
@@ -471,14 +596,19 @@ export interface FileRouteTypes {
     | '/settings/payment'
     | '/settings/profile'
     | '/settings/security'
+    | '/tag/$slug'
     | '/admin'
     | '/blog'
     | '/dashboard'
+    | '/me'
     | '/settings'
+    | '/admin/prompts/new'
     | '/api/auth/$'
     | '/api/storage/file'
     | '/api/webhooks/creem'
     | '/api/webhooks/stripe'
+    | '/me/collections/$id'
+    | '/admin/prompts/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -486,7 +616,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/manifest.json'
+    | '/me'
     | '/robots.txt'
+    | '/search'
     | '/settings'
     | '/sitemap.xml'
     | '/(legals)/cookie'
@@ -501,6 +633,9 @@ export interface FileRouteTypes {
     | '/(pages)/waitlist'
     | '/(tests)/test-404'
     | '/(tests)/test-error'
+    | '/admin/models'
+    | '/admin/prompts'
+    | '/admin/tags'
     | '/admin/users'
     | '/auth/error'
     | '/auth/forgot-password'
@@ -508,6 +643,8 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/blog/$slug'
+    | '/me/collections'
+    | '/prompt/$slug'
     | '/settings/apikeys'
     | '/settings/billing'
     | '/settings/files'
@@ -515,14 +652,19 @@ export interface FileRouteTypes {
     | '/settings/payment'
     | '/settings/profile'
     | '/settings/security'
+    | '/tag/$slug'
     | '/admin/'
     | '/blog/'
     | '/dashboard/'
+    | '/me/'
     | '/settings/'
+    | '/admin/prompts/new'
     | '/api/auth/$'
     | '/api/storage/file'
     | '/api/webhooks/creem'
     | '/api/webhooks/stripe'
+    | '/me/collections/$id'
+    | '/admin/prompts/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -531,7 +673,9 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
   ManifestDotjsonRoute: typeof ManifestDotjsonRoute
+  MeRoute: typeof MeRouteWithChildren
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   legalsCookieRoute: typeof legalsCookieRoute
@@ -547,6 +691,8 @@ export interface RootRouteChildren {
   testsTest404Route: typeof testsTest404Route
   testsTestErrorRoute: typeof testsTestErrorRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  PromptSlugRoute: typeof PromptSlugRoute
+  TagSlugRoute: typeof TagSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiStorageFileRoute: typeof ApiStorageFileRoute
@@ -570,11 +716,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/robots.txt': {
       id: '/robots.txt'
       path: '/robots.txt'
       fullPath: '/robots.txt'
       preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/manifest.json': {
@@ -619,6 +779,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsIndexRouteImport
       parentRoute: typeof SettingsRoute
     }
+    '/me/': {
+      id: '/me/'
+      path: '/'
+      fullPath: '/me/'
+      preLoaderRoute: typeof MeIndexRouteImport
+      parentRoute: typeof MeRoute
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -639,6 +806,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/tag/$slug': {
+      id: '/tag/$slug'
+      path: '/tag/$slug'
+      fullPath: '/tag/$slug'
+      preLoaderRoute: typeof TagSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/settings/security': {
       id: '/settings/security'
@@ -689,6 +863,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsApikeysRouteImport
       parentRoute: typeof SettingsRoute
     }
+    '/prompt/$slug': {
+      id: '/prompt/$slug'
+      path: '/prompt/$slug'
+      fullPath: '/prompt/$slug'
+      preLoaderRoute: typeof PromptSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me/collections': {
+      id: '/me/collections'
+      path: '/collections'
+      fullPath: '/me/collections'
+      preLoaderRoute: typeof MeCollectionsRouteImport
+      parentRoute: typeof MeRoute
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -736,6 +924,27 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/tags': {
+      id: '/admin/tags'
+      path: '/tags'
+      fullPath: '/admin/tags'
+      preLoaderRoute: typeof AdminTagsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/prompts': {
+      id: '/admin/prompts'
+      path: '/prompts'
+      fullPath: '/admin/prompts'
+      preLoaderRoute: typeof AdminPromptsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/models': {
+      id: '/admin/models'
+      path: '/models'
+      fullPath: '/admin/models'
+      preLoaderRoute: typeof AdminModelsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/(tests)/test-error': {
@@ -822,6 +1031,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof legalsCookieRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/me/collections/$id': {
+      id: '/me/collections/$id'
+      path: '/$id'
+      fullPath: '/me/collections/$id'
+      preLoaderRoute: typeof MeCollectionsIdRouteImport
+      parentRoute: typeof MeCollectionsRoute
+    }
     '/api/webhooks/stripe': {
       id: '/api/webhooks/stripe'
       path: '/api/webhooks/stripe'
@@ -850,15 +1066,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/prompts/new': {
+      id: '/admin/prompts/new'
+      path: '/new'
+      fullPath: '/admin/prompts/new'
+      preLoaderRoute: typeof AdminPromptsNewRouteImport
+      parentRoute: typeof AdminPromptsRoute
+    }
+    '/admin/prompts/$id/edit': {
+      id: '/admin/prompts/$id/edit'
+      path: '/$id/edit'
+      fullPath: '/admin/prompts/$id/edit'
+      preLoaderRoute: typeof AdminPromptsIdEditRouteImport
+      parentRoute: typeof AdminPromptsRoute
+    }
   }
 }
 
+interface AdminPromptsRouteChildren {
+  AdminPromptsNewRoute: typeof AdminPromptsNewRoute
+  AdminPromptsIdEditRoute: typeof AdminPromptsIdEditRoute
+}
+
+const AdminPromptsRouteChildren: AdminPromptsRouteChildren = {
+  AdminPromptsNewRoute: AdminPromptsNewRoute,
+  AdminPromptsIdEditRoute: AdminPromptsIdEditRoute,
+}
+
+const AdminPromptsRouteWithChildren = AdminPromptsRoute._addFileChildren(
+  AdminPromptsRouteChildren,
+)
+
 interface AdminRouteChildren {
+  AdminModelsRoute: typeof AdminModelsRoute
+  AdminPromptsRoute: typeof AdminPromptsRouteWithChildren
+  AdminTagsRoute: typeof AdminTagsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminModelsRoute: AdminModelsRoute,
+  AdminPromptsRoute: AdminPromptsRouteWithChildren,
+  AdminTagsRoute: AdminTagsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -895,6 +1145,30 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
 )
 
+interface MeCollectionsRouteChildren {
+  MeCollectionsIdRoute: typeof MeCollectionsIdRoute
+}
+
+const MeCollectionsRouteChildren: MeCollectionsRouteChildren = {
+  MeCollectionsIdRoute: MeCollectionsIdRoute,
+}
+
+const MeCollectionsRouteWithChildren = MeCollectionsRoute._addFileChildren(
+  MeCollectionsRouteChildren,
+)
+
+interface MeRouteChildren {
+  MeCollectionsRoute: typeof MeCollectionsRouteWithChildren
+  MeIndexRoute: typeof MeIndexRoute
+}
+
+const MeRouteChildren: MeRouteChildren = {
+  MeCollectionsRoute: MeCollectionsRouteWithChildren,
+  MeIndexRoute: MeIndexRoute,
+}
+
+const MeRouteWithChildren = MeRoute._addFileChildren(MeRouteChildren)
+
 interface SettingsRouteChildren {
   SettingsApikeysRoute: typeof SettingsApikeysRoute
   SettingsBillingRoute: typeof SettingsBillingRoute
@@ -927,7 +1201,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
   ManifestDotjsonRoute: ManifestDotjsonRoute,
+  MeRoute: MeRouteWithChildren,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SearchRoute: SearchRoute,
   SettingsRoute: SettingsRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   legalsCookieRoute: legalsCookieRoute,
@@ -943,6 +1219,8 @@ const rootRouteChildren: RootRouteChildren = {
   testsTest404Route: testsTest404Route,
   testsTestErrorRoute: testsTestErrorRoute,
   BlogSlugRoute: BlogSlugRoute,
+  PromptSlugRoute: PromptSlugRoute,
+  TagSlugRoute: TagSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiStorageFileRoute: ApiStorageFileRoute,

@@ -3,10 +3,10 @@
  */
 export const messages = {
   site: {
-    name: 'TanStarter Demo',
-    title: 'TanStarter - 用 TanStack 更快交付，用 Cloudflare 更省成本',
+    name: '提示词精选',
+    title: '提示词精选 - 看得见效果，复制就能用',
     description:
-      'TanStarter 是完整的 TanStack Start SaaS 模板，集成 AI、认证、数据库、存储、博客、邮件、邮件列表、支付、仪表盘、SEO 等，全栈部署于 Cloudflare Workers',
+      '面向中文 AI 用户的精选提示词社区，按模型、标签和效果图快速找到高质量提示词。',
   },
 
   nav: {

@@ -97,6 +97,7 @@ function RootComponent() {
   const isProtectedPages =
     pathname.startsWith(Routes.Admin) ||
     pathname.startsWith(Routes.Dashboard) ||
+    pathname.startsWith(Routes.Me) ||
     pathname.startsWith(Routes.Settings);
   // When no child route matches (e.g. /hello), only root is in matches; use minimal layout
   const isNotFound =
