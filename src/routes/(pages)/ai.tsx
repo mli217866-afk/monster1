@@ -1,3 +1,7 @@
+import {
+  getPromptRemixSource,
+  type PromptRemixSource,
+} from '@/api/prompt-remix';
 import { createFileRoute } from '@tanstack/react-router';
 import Container from '@/components/layout/container';
 import { AiCaptionCard } from '@/components/ai/ai-caption-card';
@@ -10,8 +14,39 @@ import { AiTranslationCard } from '@/components/ai/ai-translation-card';
 import { AiTtsCard } from '@/components/ai/ai-tts-card';
 import { websiteConfig } from '@/config/website';
 import { seo } from '@/lib/seo';
+import { z } from 'zod';
+
+const aiSearchSchema = z.object({
+  remix: z.string().optional(),
+  auto: z.preprocess(
+    (value) => value === true || value === '1' || value === 'true',
+    z.boolean().default(false)
+  ),
+  model: z
+    .enum([
+      'fal-ai/gemini-25-flash-image',
+      'fal-ai/flux/schnell',
+      'openai/gpt-image-2',
+    ])
+    .optional(),
+});
 
 export const Route = createFileRoute('/(pages)/ai')({
+  validateSearch: aiSearchSchema,
+  loaderDeps: ({ search }) => ({
+    remix: search.remix,
+  }),
+  loader: async ({ deps }) => {
+    if (!deps.remix) {
+      return { remixSource: null as PromptRemixSource | null };
+    }
+
+    const remixSource = await getPromptRemixSource({
+      data: { slug: deps.remix },
+    });
+
+    return { remixSource };
+  },
   head: () =>
     seo('/ai', {
       title: `AI Playground | ${websiteConfig.metadata?.name}`,
@@ -22,6 +57,10 @@ export const Route = createFileRoute('/(pages)/ai')({
 });
 
 function AiPage() {
+  const search = Route.useSearch();
+  const loaderData = Route.useLoaderData();
+  const remixSource = loaderData?.remixSource ?? null;
+
   return (
     <Container className="py-16 px-4">
       <div className="mx-auto max-w-5xl space-y-10 pb-16">
@@ -51,7 +90,11 @@ function AiPage() {
           <AiCfImageCard />
         </section>
         <section id="image-generator-fal" className="scroll-mt-20">
-          <AiImageCard />
+          <AiImageCard
+            remixSource={remixSource}
+            autoGenerate={search.auto}
+            initialModel={search.model}
+          />
         </section>
         <section id="image-editing" className="scroll-mt-20">
           <AiImageEditCard />

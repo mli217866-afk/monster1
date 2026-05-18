@@ -34,6 +34,7 @@ import { Route as SettingsBillingRouteImport } from './routes/settings/billing'
 import { Route as SettingsApikeysRouteImport } from './routes/settings/apikeys'
 import { Route as PromptSlugRouteImport } from './routes/prompt/$slug'
 import { Route as MeCollectionsRouteImport } from './routes/me/collections'
+import { Route as CreateSlugRouteImport } from './routes/create/$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
@@ -188,6 +189,11 @@ const MeCollectionsRoute = MeCollectionsRouteImport.update({
   id: '/collections',
   path: '/collections',
   getParentRoute: () => MeRoute,
+} as any)
+const CreateSlugRoute = CreateSlugRouteImport.update({
+  id: '/create/$slug',
+  path: '/create/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
@@ -368,6 +374,7 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/create/$slug': typeof CreateSlugRoute
   '/me/collections': typeof MeCollectionsRouteWithChildren
   '/prompt/$slug': typeof PromptSlugRoute
   '/settings/apikeys': typeof SettingsApikeysRoute
@@ -420,6 +427,7 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/create/$slug': typeof CreateSlugRoute
   '/me/collections': typeof MeCollectionsRouteWithChildren
   '/prompt/$slug': typeof PromptSlugRoute
   '/settings/apikeys': typeof SettingsApikeysRoute
@@ -477,6 +485,7 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/create/$slug': typeof CreateSlugRoute
   '/me/collections': typeof MeCollectionsRouteWithChildren
   '/prompt/$slug': typeof PromptSlugRoute
   '/settings/apikeys': typeof SettingsApikeysRoute
@@ -535,6 +544,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/blog/$slug'
+    | '/create/$slug'
     | '/me/collections'
     | '/prompt/$slug'
     | '/settings/apikeys'
@@ -587,6 +597,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/blog/$slug'
+    | '/create/$slug'
     | '/me/collections'
     | '/prompt/$slug'
     | '/settings/apikeys'
@@ -643,6 +654,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/blog/$slug'
+    | '/create/$slug'
     | '/me/collections'
     | '/prompt/$slug'
     | '/settings/apikeys'
@@ -691,6 +703,7 @@ export interface RootRouteChildren {
   testsTest404Route: typeof testsTest404Route
   testsTestErrorRoute: typeof testsTestErrorRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  CreateSlugRoute: typeof CreateSlugRoute
   PromptSlugRoute: typeof PromptSlugRoute
   TagSlugRoute: typeof TagSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -876,6 +889,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/me/collections'
       preLoaderRoute: typeof MeCollectionsRouteImport
       parentRoute: typeof MeRoute
+    }
+    '/create/$slug': {
+      id: '/create/$slug'
+      path: '/create/$slug'
+      fullPath: '/create/$slug'
+      preLoaderRoute: typeof CreateSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/blog/$slug': {
       id: '/blog/$slug'
@@ -1219,6 +1239,7 @@ const rootRouteChildren: RootRouteChildren = {
   testsTest404Route: testsTest404Route,
   testsTestErrorRoute: testsTestErrorRoute,
   BlogSlugRoute: BlogSlugRoute,
+  CreateSlugRoute: CreateSlugRoute,
   PromptSlugRoute: PromptSlugRoute,
   TagSlugRoute: TagSlugRoute,
   BlogIndexRoute: BlogIndexRoute,

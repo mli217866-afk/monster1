@@ -143,7 +143,7 @@ export function PromptDetailPage({
             ))}
           </div>
 
-          <PromptActions promptId={prompt.id} />
+          <PromptActions promptId={prompt.id} promptSlug={prompt.slug} />
 
           {(prompt.sourceAuthor || prompt.sourceUrl) && (
             <div className="rounded-lg border p-4 text-sm">

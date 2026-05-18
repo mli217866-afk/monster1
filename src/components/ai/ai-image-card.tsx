@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import type { PromptRemixSource } from '@/api/prompt-remix';
+import { useEffect, useRef, useState } from 'react';
 import { IconDownload, IconLoader2, IconPhoto } from '@tabler/icons-react';
 import { generateAiImage } from '@/api/ai';
 import { Button } from '@/components/ui/button';
@@ -83,17 +84,41 @@ const PROMPT_PRESETS = [
 
 type PresetId = (typeof PROMPT_PRESETS)[number]['id'];
 
-export function AiImageCard() {
+export function AiImageCard({
+  remixSource,
+  autoGenerate = false,
+  initialModel = 'fal-ai/gemini-25-flash-image',
+}: {
+  remixSource?: PromptRemixSource | null;
+  autoGenerate?: boolean;
+  initialModel?: FalModel;
+}) {
   const [activePreset, setActivePreset] = useState<PresetId | null>(
     PROMPT_PRESETS[0].id
   );
   const [prompt, setPrompt] = useState<string>(PROMPT_PRESETS[0].prompt);
-  const [model, setModel] = useState<FalModel>('fal-ai/gemini-25-flash-image');
+  const [model, setModel] = useState<FalModel>(initialModel);
   const [imageUrl, setImageUrl] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [isPending, setIsPending] = useState(false);
+  const autoStartedRef = useRef(false);
 
   const activeModel = FAL_MODELS.find((m) => m.value === model);
+
+  useEffect(() => {
+    setModel(initialModel);
+  }, [initialModel]);
+
+  useEffect(() => {
+    if (!remixSource) return;
+
+    setPrompt(remixSource.content);
+    setModel('openai/gpt-image-2');
+    setActivePreset(null);
+    setError(undefined);
+    setImageUrl(undefined);
+    autoStartedRef.current = false;
+  }, [remixSource]);
 
   function onSelectPreset(id: PresetId) {
     const preset = PROMPT_PRESETS.find((p) => p.id === id);
@@ -124,6 +149,20 @@ export function AiImageCard() {
     }
   }
 
+  useEffect(() => {
+    if (
+      !autoGenerate ||
+      autoStartedRef.current ||
+      !remixSource ||
+      prompt.trim().length < 10
+    ) {
+      return;
+    }
+
+    autoStartedRef.current = true;
+    void onGenerate();
+  }, [autoGenerate, prompt, remixSource]);
+
   return (
     <Card>
       <CardHeader>
@@ -136,6 +175,18 @@ export function AiImageCard() {
           <code className="rounded bg-muted px-1 py-0.5 text-xs">{model}</code>{' '}
           to generate vivid images from text prompts.
         </CardDescription>
+        {remixSource && (
+          <div className="rounded-2xl border border-amber-200/70 bg-amber-50/70 p-4 text-sm leading-6 text-amber-900">
+            <div className="font-medium">已从提示词详情页带入</div>
+            <div className="mt-1">
+              当前来源于《{remixSource.title}》。提示词已经自动复制到这里，
+              模型也已切到 `gpt-image-2`。
+              {autoGenerate
+                ? ' 进入页面后会直接开始生成。'
+                : ' 你现在只需要点一次生成。'}
+            </div>
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <div className="mb-4 space-y-1.5">
@@ -164,26 +215,28 @@ export function AiImageCard() {
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="ai-image-prompt">Prompt</Label>
-            <div className="flex flex-wrap gap-2">
-              {PROMPT_PRESETS.map((preset) => {
-                const isActive = activePreset === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    onClick={() => onSelectPreset(preset.id)}
-                    className={cn(
-                      'rounded-full border px-3 py-1 text-xs transition-colors',
-                      isActive
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-muted/40 text-muted-foreground hover:bg-muted'
-                    )}
-                  >
-                    {preset.label}
-                  </button>
-                );
-              })}
-            </div>
+            {!remixSource && (
+              <div className="flex flex-wrap gap-2">
+                {PROMPT_PRESETS.map((preset) => {
+                  const isActive = activePreset === preset.id;
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => onSelectPreset(preset.id)}
+                      className={cn(
+                        'rounded-full border px-3 py-1 text-xs transition-colors',
+                        isActive
+                          ? 'border-primary bg-primary text-primary-foreground'
+                          : 'border-border bg-muted/40 text-muted-foreground hover:bg-muted'
+                      )}
+                    >
+                      {preset.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <Textarea
               id="ai-image-prompt"
               rows={6}
@@ -193,7 +246,11 @@ export function AiImageCard() {
             />
             <p className="text-xs text-muted-foreground">
               {prompt.length} characters
-              {activePreset === null && ' · custom prompt'}
+              {remixSource
+                ? ' · imported from prompt detail'
+                : activePreset === null
+                  ? ' · custom prompt'
+                  : ''}
             </p>
             <Button
               type="button"
@@ -205,6 +262,8 @@ export function AiImageCard() {
                   <IconLoader2 className="mr-1 size-4 animate-spin" />
                   Generating...
                 </>
+              ) : remixSource ? (
+                '一键生成同款'
               ) : (
                 'Generate Image'
               )}

@@ -90,6 +90,7 @@ const FAL_IMAGE_MODELS = [
   'fal-ai/gemini-25-flash-image',
   'openai/gpt-image-2',
 ] as const;
+const GPT_IMAGE_SIZES = ['1024x1024', '1536x1024', '1024x1536'] as const;
 
 const imageGenerationSchema = z.object({
   prompt: z
@@ -97,6 +98,7 @@ const imageGenerationSchema = z.object({
     .min(10, 'Prompt is too short.')
     .max(500, 'Prompt is too long, please keep it under 500 characters.'),
   model: z.enum(FAL_IMAGE_MODELS).default('fal-ai/gemini-25-flash-image'),
+  size: z.enum(GPT_IMAGE_SIZES).optional(),
 });
 
 const CF_IMAGE_MODELS = [
@@ -165,6 +167,8 @@ const captionSchema = z.object({
     .min(1, 'Please provide a prompt.')
     .max(300, 'Prompt is too long, please keep it under 300 characters.'),
 });
+
+const TUZI_TIMEOUT_MS = 65_000;
 
 /**
  * Helper: invoke the Cloudflare Workers AI REST endpoint for a given model.
@@ -312,6 +316,101 @@ function parseTaglines(text: string): string[] {
     .slice(0, 5);
 }
 
+async function readTuziError(response: Response) {
+  const text = await response.text().catch(() => '');
+  if (!text) return 'Empty response';
+
+  try {
+    const payload = JSON.parse(text) as {
+      error?: { message?: string };
+      message?: string;
+    };
+    return payload.error?.message ?? payload.message ?? text.slice(0, 240);
+  } catch {
+    return text.slice(0, 240);
+  }
+}
+
+async function generateGptImage2WithTuzi(
+  prompt: string,
+  size: (typeof GPT_IMAGE_SIZES)[number] = '1024x1024'
+) {
+  const apiKey = serverEnv.TUZI_API_KEY;
+  const baseUrl = (serverEnv.TUZI_BASE_URL ?? 'https://api.tu-zi.com').replace(
+    /\/+$/,
+    ''
+  );
+
+  if (!apiKey) {
+    throw new Error(
+      'Missing TUZI_API_KEY env. Set it as a Worker secret to use gpt-image-2.'
+    );
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(
+    () => controller.abort('tuzi-generation-timeout'),
+    TUZI_TIMEOUT_MS
+  );
+
+  let response: Response;
+
+  try {
+    response = await fetch(`${baseUrl}/v1/images/generations`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-image-2',
+        prompt,
+        n: 1,
+        size,
+        response_format: 'url',
+        quality: 'low',
+        output_format: 'jpeg',
+      }),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      (error.name === 'AbortError' ||
+        error.message === 'tuzi-generation-timeout')
+    ) {
+      throw new Error('GPT Image 2 generation timed out. Please retry.');
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  if (!response.ok) {
+    const message = await readTuziError(response);
+    throw new Error(`GPT Image 2 failed (${response.status}): ${message}`);
+  }
+
+  const payload = (await response.json()) as {
+    data?: Array<{
+      url?: string;
+      b64_json?: string;
+      revised_prompt?: string;
+    }>;
+  };
+
+  const image = payload.data?.[0];
+  if (!image?.url && !image?.b64_json) {
+    throw new Error('GPT Image 2 returned no image.');
+  }
+
+  return {
+    imageUrl: image.url ?? `data:image/jpeg;base64,${image.b64_json}`,
+    revisedPrompt: image.revised_prompt ?? null,
+  };
+}
+
 /**
  * Generate an image from a text prompt using fal.ai. Caller picks the model
  * (Flux Schnell, Gemini 2.5 Flash / Nano Banana, or GPT Image 2).
@@ -320,6 +419,17 @@ function parseTaglines(text: string): string[] {
 export const generateAiImage = createServerFn({ method: 'POST' })
   .inputValidator(imageGenerationSchema)
   .handler(async ({ data }) => {
+    if (data.model === 'openai/gpt-image-2') {
+      const size = data.size ?? '1024x1024';
+      const result = await generateGptImage2WithTuzi(data.prompt, size);
+      return {
+        imageUrl: result.imageUrl,
+        revisedPrompt: result.revisedPrompt,
+        model: data.model,
+        size,
+      };
+    }
+
     const apiKey = serverEnv.FAL_KEY;
     if (!apiKey) {
       throw new Error(
@@ -329,19 +439,9 @@ export const generateAiImage = createServerFn({ method: 'POST' })
 
     const adapter = falImage(data.model, { apiKey });
 
-    // GPT Image 2 defaults to high quality which can take 60–75s and may
-    // exhaust the Cloudflare Worker subrequest budget while polling fal's
-    // queue. Force the cheaper / faster `low` quality + jpeg encoding so it
-    // completes in ~30s for the demo.
-    const modelOptions =
-      data.model === 'openai/gpt-image-2'
-        ? { quality: 'low' as const, output_format: 'jpeg' as const }
-        : undefined;
-
     const result = await generateImage({
       adapter,
       prompt: data.prompt,
-      ...(modelOptions ? { modelOptions } : {}),
     });
 
     const image = result.images?.[0];

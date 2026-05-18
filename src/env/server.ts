@@ -40,6 +40,10 @@ export const serverEnv = createEnv({
 
     // AI image generation (fal.ai)
     FAL_KEY: z.string().optional(),
+
+    // Tuzi API (OpenAI-compatible)
+    TUZI_API_KEY: z.string().optional(),
+    TUZI_BASE_URL: z.url().default('https://api.tu-zi.com'),
   },
   runtimeEnv: process.env,
 });
