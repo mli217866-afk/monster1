@@ -91,12 +91,16 @@ const FAL_IMAGE_MODELS = [
   'openai/gpt-image-2',
 ] as const;
 const GPT_IMAGE_SIZES = ['1024x1024', '1536x1024', '1024x1536'] as const;
+const IMAGE_PROMPT_MAX_LENGTH = 8_000;
 
 const imageGenerationSchema = z.object({
   prompt: z
     .string()
     .min(10, 'Prompt is too short.')
-    .max(500, 'Prompt is too long, please keep it under 500 characters.'),
+    .max(
+      IMAGE_PROMPT_MAX_LENGTH,
+      `Prompt is too long, please keep it under ${IMAGE_PROMPT_MAX_LENGTH} characters.`
+    ),
   model: z.enum(FAL_IMAGE_MODELS).default('fal-ai/gemini-25-flash-image'),
   size: z.enum(GPT_IMAGE_SIZES).optional(),
 });
